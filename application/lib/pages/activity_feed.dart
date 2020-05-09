@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/header.dart';
+
 class ActivityFeed extends StatefulWidget {
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
@@ -8,7 +10,10 @@ class ActivityFeed extends StatefulWidget {
 class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
-    return Text('Activity Feed');
+     return Scaffold(
+      appBar: header(context),
+      body: Text("Feed"),
+    );
   }
 }
 
