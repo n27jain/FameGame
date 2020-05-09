@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/header.dart';
 import '../widgets/progress.dart';
 
-final userRef = Firestore.instance.collection('users');
+final usersRef = Firestore.instance.collection('users');
 
 class Timeline extends StatefulWidget {
   @override
@@ -11,19 +11,32 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
+  List <dynamic> users = [] ;
 
   @override
   void initState() {
-    final userRef = Firestore.instance.collection('users');
-    super.initState();
-
-
+        getUsers();
+        super.initState();
   }
+  
+  getUsers() async {
+    final QuerySnapshot snapshot =  await usersRef.where("isAdmin", isEqualTo: false).getDocuments(); 
+      snapshot.documents.forEach((DocumentSnapshot doc) {
+        setState(() {
+          users = snapshot.documents;
+        });
+      });
+  }
+
   @override
   Widget build(context) {
     return Scaffold(
       appBar: header(context),
-      body: circularProgress(context),
+      body: Container(
+        child: ListView(children: users.map((user) => user).toList(),),
+      ),
     );
   }
+
+    
 }
