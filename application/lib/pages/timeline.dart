@@ -15,25 +15,49 @@ class _TimelineState extends State<Timeline> {
 
   @override
   void initState() {
-        getUsers();
-        super.initState();
+    super.initState();
   }
   
-  getUsers() async {
-    final QuerySnapshot snapshot =  await usersRef.where("isAdmin", isEqualTo: false).getDocuments(); 
-      snapshot.documents.forEach((DocumentSnapshot doc) {
-        setState(() {
-          users = snapshot.documents;
-        });
-      });
+  // getUsers() async {
+  //   final QuerySnapshot snapshot =  await usersRef.where("isAdmin", isEqualTo: true).getDocuments(); 
+  //     snapshot.documents.forEach((DocumentSnapshot doc) {
+  //       setState(() {
+  //         users = snapshot.documents;
+  //       });
+  //     });
+  // }
+  createUser() async {
+    await usersRef.add({
+      "username": "Linda",
+      "postCount": 0,
+      "isAdmin" : false,
+    });
+  }
+  updateUser() async {
+    await usersRef.add({
+      "username": "Linda",
+      "postCount": 0,
+      "isAdmin" : false,
+    });
   }
 
   @override
   Widget build(context) {
     return Scaffold(
       appBar: header(context),
-      body: Container(
-        child: ListView(children: users.map((user) => user).toList(),),
+      body: StreamBuilder<QuerySnapshot>(
+        stream:usersRef.snapshots(),
+        builder: (context, snapshot){
+          if(!snapshot.hasData){
+            return circularProgress(context);
+          }
+          final List <Text> children = snapshot.data.documents.map((doc) => Text(doc['username'])).toList();
+          return Container(
+            child: ListView(
+              children: children,
+           ),
+          );
+        },
       ),
     );
   }

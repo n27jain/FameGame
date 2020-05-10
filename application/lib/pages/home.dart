@@ -1,14 +1,21 @@
-import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../models/user.dart';
 import 'activity_feed.dart';
+import 'create_account.dart';
 import 'profile.dart';
 import 'search.dart';
 import 'upload.dart';
-import 'timeline.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final usersRef = Firestore.instance.collection('users');
+final StorageReference storageReference = FirebaseStorage.instance.ref();
+final postsRef = Firestore.instance.collection("posts");
+final timeStamp = DateTime.now();
+User currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -50,6 +57,7 @@ class _HomeState extends State<Home> {
   //Funtion Handlers
   handleSignIn(GoogleSignInAccount account){
     if(account != null){
+      createUserInFirestore();
       print("User signed in!: $account");
       setState(() {
         isAuth = true;
@@ -62,7 +70,30 @@ class _HomeState extends State<Home> {
     }
   }
   
-
+  createUserInFirestore() async{
+    //exists in userscollection in database
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    DocumentSnapshot doc = await usersRef.document(user.id).get();
+    //if doesnt exists take to create account page
+    if(!doc.exists){
+      final username = await Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAccount()));
+      //get username from create account, use it to make a  new users document in the collection.
+      usersRef.document(user.id).setData({
+        "id": user.id,
+        "username" : username,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp":timeStamp,
+      });
+      doc = await usersRef.document(user.id).get();
+    }
+    currentUser = User.fromDocument(doc);
+    print(currentUser);
+    
+  }
+  
   login(){
     googleSignIn.signIn();
   }
@@ -89,11 +120,15 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          Timeline(),
+          RaisedButton(
+            child: Text('Logout'),
+            onPressed: logout,
+          ),
+          //Timeline(),
           ActivityFeed(),
-          Upload(),
+          Upload(currentUser : currentUser),
           Search(),
-          Profile(),
+          Profile(profileId: currentUser?.id),
         ],
         controller: pageController ,
         onPageChanged: onPageChanged,
