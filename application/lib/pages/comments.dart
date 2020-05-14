@@ -59,14 +59,29 @@ class CommentsState extends State<Comments> {
     );
   }
   addComment(){
-    print("adding comment");
     commentsRef.document(postId).collection("comments").add(
       {"username": currentUser.username,
       "comment": commentController.text,
-      "timestamp": timestamp,
+      "timestamp": timeStamp,
       "avatarUrl": currentUser.photoUrl,
       "userId": currentUser.id,}
     );
+    bool isNotPostOwner = currentUser.id != postOwnerId;
+    if (isNotPostOwner) {
+      feedRef
+            .document(postOwnerId)
+            .collection("feedItems")
+            .add({
+          "type": "comment",
+          "commentData": commentController.text,
+          "username": currentUser.username,
+          "userId": currentUser.id,
+          "userProfileImg": currentUser.photoUrl,
+          "postId": postId,
+          "mediaUrl": postMediaUrl,
+          "timestamp": timeStamp,
+      });
+    }
     commentController.clear();
   }
 
@@ -76,7 +91,7 @@ class CommentsState extends State<Comments> {
       appBar: header(context),
       body: Column(
         children: <Widget>[
-          Expanded(child: Text("data")//buildComments()
+          Expanded(child: buildComments()
           ),
           Divider(),
           ListTile(
@@ -102,14 +117,14 @@ class Comment extends StatelessWidget {
   final String userId;
   final String avatarUrl;
   final String comment;
-  final Timestamp timestamp;
+  final Timestamp timeStamp;
 
   Comment({
      this.username,
      this.userId,
      this.avatarUrl,
      this.comment,
-     this.timestamp,
+     this.timeStamp,
   });
 
   factory Comment.fromDocument(DocumentSnapshot doc) {
@@ -117,7 +132,7 @@ class Comment extends StatelessWidget {
       username: doc['username'],
       userId: doc['userId'],
       comment: doc['comment'],
-      timestamp: doc['timestamp'],
+      timeStamp: doc['timestamp'],
       avatarUrl: doc['avatarUrl'],
     );
   }
@@ -131,7 +146,7 @@ class Comment extends StatelessWidget {
           leading: CircleAvatar(
             backgroundImage: CachedNetworkImageProvider(avatarUrl),
           ),
-          subtitle: Text(timeago.format(timestamp.toDate())),
+          subtitle: Text(timeago.format(timeStamp.toDate())),
         ),
         Divider(),
       ],

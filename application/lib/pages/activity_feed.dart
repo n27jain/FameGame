@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:fluttershare/widgets/progress.dart';
 import '../widgets/header.dart';
 
 class ActivityFeed extends StatefulWidget {
@@ -8,11 +8,24 @@ class ActivityFeed extends StatefulWidget {
 }
 
 class _ActivityFeedState extends State<ActivityFeed> {
+
+  getActivityFeed(){
+    
+  }
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+      return Scaffold(
       appBar: header(context),
-      body: Text("Feed"),
+      body: Container(
+          child: FutureBuilder(
+        future: getActivityFeed(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return circularProgress(context);
+          }
+          return Text("Activity Feed");
+        },
+      )),
     );
   }
 }

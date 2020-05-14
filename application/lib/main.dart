@@ -1,17 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home.dart';
 
 void main() {
-  //use timestamp with 
-  Firestore.instance.settings(timestampsInSnapshotsEnabled: true).then(
-    (_)  {
-      print("Timestamps enabled in snapshots\n");
-    }, onError: (_){
-      print("Error enabling timestamps in snapshots\n");
-    }
-  );
   runApp(MyApp());
 }
 

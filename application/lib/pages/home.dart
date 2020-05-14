@@ -11,11 +11,11 @@ import 'search.dart';
 import 'upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
-final usersRef = Firestore.instance.collection('users');
 final StorageReference storageReference = FirebaseStorage.instance.ref();
+final usersRef = Firestore.instance.collection('users');
 final postsRef = Firestore.instance.collection("posts");
 final commentsRef = Firestore.instance.collection('comments');
-
+final feedRef = Firestore.instance.collection('feed');
 final timeStamp = DateTime.now();
 User currentUser;
 
