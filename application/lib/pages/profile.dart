@@ -9,6 +9,7 @@ import 'package:fluttershare/widgets/post.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
+  //TODO: Update data while still on the page if firebase db has changed. 
   final String profileId;
 
   Profile({this.profileId});
@@ -18,17 +19,57 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isFollowing = false;
   final String currentUserId = currentUser?.id;
   bool isLoading = false;
   int postCount = 0;
+  int followerCount = 0 ;
+   int followingCount = 0 ;
   List<Post> posts = [];
 
   @override
   void initState() {
     super.initState();
     getProfilePosts();
+    getFollowers();
+    getFollowing();
+    checkIfFollowing();
   }
 
+  checkIfFollowing() async{
+    
+    DocumentSnapshot doc = await followersRef
+      .document(widget.profileId)
+      .collection('usersFollowers')
+      .document(currentUserId)
+      .get()
+    ;
+    setState(() {
+      isFollowing = doc.exists;
+    });
+    print("Is the user following? $isFollowing");
+  }
+  getFollowers() async {
+    QuerySnapshot snapshot = await followersRef
+      .document(widget.profileId)
+      .collection('usersFollowers')
+      .getDocuments();
+
+    setState(() {
+      followerCount = snapshot.documents.length;
+    });
+
+  }
+  getFollowing() async{
+    QuerySnapshot snapshot = await followingRef
+      .document(widget.profileId)
+      .collection('userFollows')
+      .getDocuments();
+    setState(() {
+      followingCount = snapshot.documents.length;
+    });
+  }
   getProfilePosts() async {
     setState(() {
       isLoading = true;
@@ -76,6 +117,87 @@ class _ProfileState extends State<Profile> {
             builder: (context) => EditProfile(currentUserId: currentUserId)));
   }
 
+  handleUnfollow(){
+    //TODO: Keep track of people after they have unfollowed 
+    // Maybe collect the timestamp to figure out when these people follow / unfollow
+    _scaffoldKey.currentState.hideCurrentSnackBar();
+    setState(() {
+      isFollowing = false;
+     });
+
+    // remove opperating user to the list of followers for this widget user.
+    followersRef
+      .document(widget.profileId)
+      .collection('usersFollowers')
+      .document(currentUserId)
+      .get().then((value) {
+        if(value.exists){
+          value.reference.delete();
+        }
+      });
+
+    //Operating user follows this unfollows this new one
+    followingRef
+      .document(currentUserId)
+      .collection('userFollows')
+      .document(widget.profileId)
+      .get().then((value) {
+        if(value.exists){
+          value.reference.delete();
+        }
+      });
+
+    feedRef
+    .document(widget.profileId)
+    .collection("feedItems")
+    .document(currentUserId).get().then((value) {
+      if(value.exists){
+        value.reference.delete();
+      }
+    });
+
+    SnackBar snackbar = SnackBar(content: Text("User unfollowed!"));
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  handleFollow(){
+     _scaffoldKey.currentState.hideCurrentSnackBar();
+     setState(() {
+      isFollowing = true;
+     });
+
+    // Add opperating user to the list of followers for this widget user.
+    followersRef
+      .document(widget.profileId)
+      .collection('usersFollowers')
+      .document(currentUserId)
+      .setData({});
+
+    //Operating user follows this new one
+    followingRef
+      .document(currentUserId)
+      .collection('userFollows')
+      .document(widget.profileId)
+      .setData({});
+    
+     feedRef
+      .document(widget.profileId)
+      .collection("feedItems")
+      .document(currentUserId)
+      .setData({
+        "type": "follow",
+        "ownerId": widget.profileId ,
+        "username": currentUser.username,
+        "userId": currentUserId,
+        "userProfileImg": currentUser.photoUrl,
+        "timestamp": timeStamp,
+        }
+      );
+      
+      SnackBar snackbar = SnackBar(content: Text("Congrats! You are now following this user!"));
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
   Container buildButton({String text, Function function}) {
     return Container(
       padding: EdgeInsets.only(top: 2.0),
@@ -87,15 +209,15 @@ class _ProfileState extends State<Profile> {
           child: Text(
             text,
             style: TextStyle(
-              color: Colors.white,
+              color: isFollowing? Colors.blue : Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: isFollowing? Colors.white: Colors.blue ,
             border: Border.all(
-              color: Colors.blue,
+              color: isFollowing? Colors.blue : Colors.white,
             ),
             borderRadius: BorderRadius.circular(5.0),
           ),
@@ -109,6 +231,12 @@ class _ProfileState extends State<Profile> {
     bool isProfileOwner = currentUserId == widget.profileId;
     if (isProfileOwner) {
       return buildButton(text: "Edit Profile", function: editProfile);
+    }
+    else if (isFollowing){
+      return buildButton(text: "Unfollow", function: handleUnfollow);
+    }
+    else if (!isFollowing){
+      return buildButton(text: "Follow", function: handleFollow);
     }
   }
 
@@ -140,8 +268,8 @@ class _ProfileState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             buildCountColumn("posts", postCount),
-                            buildCountColumn("followers", 0),
-                            buildCountColumn("following", 0),
+                            buildCountColumn("followers", followerCount),
+                            buildCountColumn("following", followingCount),
                           ],
                         ),
                         Row(
@@ -202,6 +330,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: header(context),
       body: ListView(
         children: <Widget>[
