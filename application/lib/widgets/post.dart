@@ -101,13 +101,14 @@ class _PostState extends State<Post> {
           return circularProgress(context);
         }
         User user = User.fromDocument(snapshot.data);
+        bool isPostOwner = currentUserId == ownerId;
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: CachedNetworkImageProvider(user.photoUrl),
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-            onTap: () => showProfile(context, profileId:user.id),
+            onTap: () => showProfile(context, profileId: user.id),
             child: Text(
               user.username,
               style: TextStyle(
@@ -117,15 +118,87 @@ class _PostState extends State<Post> {
             ),
           ),
           subtitle: Text(location),
-          trailing: IconButton(
-            onPressed: () => print('deleting post'),
-            icon: Icon(Icons.more_vert),
-          ),
+          trailing: isPostOwner
+              ? IconButton(
+                  onPressed: () => handleDeletePost(context),
+                  icon: Icon(Icons.more_vert),
+                )
+              : Text(''),
         );
       },
     );
   }
-  addLikeToActivityFeed(){
+
+  handleDeletePost(BuildContext parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Remove this post?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  deletePost();
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  deletePost() async {
+    // delete the post
+    postsRef
+        .document(ownerId)
+        .collection('posts')
+        .document(postId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+    print("post_$postId.jpg");
+    // the image stored
+    storageReference.child("post_$postId.jpg").delete();
+
+    // feed notifications
+    QuerySnapshot feedRefSnap = await feedRef
+        .document(ownerId)
+        .collection('feedItems')
+        .where('postId', isEqualTo: postId)
+        .getDocuments();
+
+    feedRefSnap.documents.forEach((element) {
+      if (element.exists) {
+        element.reference.delete();
+      }
+    });
+
+    // all comments
+    QuerySnapshot commentsSnapshot = await commentsRef
+        .document(postId)
+        .collection('comments')
+        .getDocuments();
+    commentsSnapshot.documents.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  addLikeToActivityFeed() {
     bool isNotPostOwner = currentUserId != ownerId;
     if (isNotPostOwner) {
       feedRef
@@ -143,19 +216,23 @@ class _PostState extends State<Post> {
       });
     }
   }
-  removeLikeToActivityFeed(){
-    bool isNotPostOwner =  currentUserId != ownerId;
+
+  removeLikeToActivityFeed() {
+    bool isNotPostOwner = currentUserId != ownerId;
     if (isNotPostOwner) {
       feedRef
-        .document(ownerId)
-        .collection("feedItems")
-        .document(postId).get().then((value) {
-          if(value.exists){
-            value.reference.delete();
-          }
-        });
+          .document(ownerId)
+          .collection("feedItems")
+          .document(postId)
+          .get()
+          .then((value) {
+        if (value.exists) {
+          value.reference.delete();
+        }
+      });
     }
   }
+
   handleLikePost() {
     print("Handling post");
     bool _isLiked = likes[currentUserId] == true;
@@ -186,7 +263,7 @@ class _PostState extends State<Post> {
         showHeart = true;
         print("Show hear $showHeart");
       });
-      Timer(Duration(milliseconds: 500), (){
+      Timer(Duration(milliseconds: 500), () {
         print("Duration Fired");
         setState(() {
           showHeart = false;
@@ -203,16 +280,22 @@ class _PostState extends State<Post> {
         alignment: Alignment.center,
         children: <Widget>[
           cachedNetworkImage(mediaUrl),
-          showHeart? Animator(
-            duration: Duration(milliseconds: 300), 
-            tween: Tween(begin: 0.8, end: 1.4),
-            curve: Curves.elasticOut,
-            cycles: 0,
-            builder: (anim) => Transform.scale(
-              scale: anim.value,
-              child: Icon(Icons.favorite, size: 80, color: Colors.red,),
-            ),
-          ) : Text("")
+          showHeart
+              ? Animator(
+                  duration: Duration(milliseconds: 300),
+                  tween: Tween(begin: 0.8, end: 1.4),
+                  curve: Curves.elasticOut,
+                  cycles: 0,
+                  builder: (anim) => Transform.scale(
+                    scale: anim.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 80,
+                      color: Colors.red,
+                    ),
+                  ),
+                )
+              : Text("")
         ],
       ),
     );
@@ -235,7 +318,7 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(right: 20.0)),
             GestureDetector(
-              onTap: () =>  showComments(
+              onTap: () => showComments(
                 context,
                 postId: postId,
                 ownerId: ownerId,
@@ -297,8 +380,7 @@ class _PostState extends State<Post> {
   }
 }
 
-showComments(context,
-    { postId,  ownerId,  mediaUrl}) {
+showComments(context, {postId, ownerId, mediaUrl}) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
     return Comments(
       postId: postId,
@@ -307,4 +389,3 @@ showComments(context,
     );
   }));
 }
-
