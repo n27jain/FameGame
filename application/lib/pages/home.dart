@@ -13,6 +13,8 @@ import 'search.dart';
 import 'upload.dart';
 import 'dart:io';
 
+//TODO: select quality of image
+
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final StorageReference storageReference = FirebaseStorage.instance.ref();
 final usersRef = Firestore.instance.collection('users');
