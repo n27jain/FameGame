@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttershare/pages/timeline.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user.dart';
 import 'activity_feed.dart';
@@ -18,6 +19,7 @@ final commentsRef = Firestore.instance.collection('comments');
 final feedRef = Firestore.instance.collection('feed');
 final followersRef = Firestore.instance.collection('followers');
 final followingRef = Firestore.instance.collection('following');
+final timelineRef = Firestore.instance.collection('timeline');
 final timeStamp = DateTime.now();
 User currentUser;
 
@@ -59,9 +61,9 @@ class _HomeState extends State<Home> {
   }
   
   //Funtion Handlers
-  handleSignIn(GoogleSignInAccount account){
+  handleSignIn(GoogleSignInAccount account) async {
     if(account != null){
-      createUserInFirestore();
+      await createUserInFirestore();
       print("User signed in!: $account");
       setState(() {
         isAuth = true;
@@ -91,6 +93,14 @@ class _HomeState extends State<Home> {
         "bio": "",
         "timestamp":timeStamp,
       });
+
+      // make new user their own follower (to include their posts in their timeline)
+      await followersRef
+          .document(user.id)
+          .collection('usersFollowers')
+          .document(user.id)
+          .setData({});
+
       doc = await usersRef.document(user.id).get();
     }
     currentUser = User.fromDocument(doc);
@@ -124,11 +134,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          RaisedButton(
-            child: Text('Logout'),
-            onPressed: logout,
-          ),
-          //Timeline(),
+          Timeline(currentUser : currentUser),
           ActivityFeed(),
           Upload(currentUser : currentUser),
           Search(),
