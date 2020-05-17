@@ -48,7 +48,6 @@ class _ProfileState extends State<Profile> {
     setState(() {
       isFollowing = doc.exists;
     });
-    print("Is the user following? $isFollowing");
   }
   getFollowers() async {
     QuerySnapshot snapshot = await followersRef

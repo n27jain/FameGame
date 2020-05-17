@@ -27,7 +27,6 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Sear
     });
   }
   buildSearchResults(){
-    print("here");
     return FutureBuilder(
       builder: (context, snapShot){
 

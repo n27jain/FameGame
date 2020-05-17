@@ -266,7 +266,6 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
     Placemark placemark = placemarks[0];
     String completeAddress =
         '${placemark.subThoroughfare} ${placemark.thoroughfare}, ${placemark.subLocality} ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea} ${placemark.postalCode}, ${placemark.country}';
-    print(completeAddress);
     String formattedAddress = "${placemark.locality}, ${placemark.country}";
     locationController.text = formattedAddress;
   }

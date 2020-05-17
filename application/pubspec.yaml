@@ -34,6 +34,7 @@ dependencies:
   timeago: 2.0.17
   cached_network_image: ^2.0.0
   flutter_svg: ^0.17.3+1
+  flutter_launcher_icons: ^0.7.5
 
 dev_dependencies:
   flutter_test:
@@ -55,3 +56,7 @@ flutter:
     - assets/images/search.svg
     - assets/images/activity_feed.svg
     - assets/images/no_content.svg
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon.png"

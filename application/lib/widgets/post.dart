@@ -171,7 +171,6 @@ class _PostState extends State<Post> {
         value.reference.delete();
       }
     });
-    print("post_$postId.jpg");
     // the image stored
     storageReference.child("post_$postId.jpg").delete();
 
@@ -236,9 +235,7 @@ class _PostState extends State<Post> {
   }
 
   handleLikePost() {
-    print("Handling post");
     bool _isLiked = likes[currentUserId] == true;
-    print(_isLiked);
     if (_isLiked) {
       postsRef
           .document(ownerId)
@@ -263,16 +260,13 @@ class _PostState extends State<Post> {
         isLiked = true;
         likes[currentUserId] = true;
         showHeart = true;
-        print("Show hear $showHeart");
       });
       Timer(Duration(milliseconds: 500), () {
-        print("Duration Fired");
         setState(() {
           showHeart = false;
         });
       });
     }
-    print(likeCount);
   }
 
   buildPostImage() {
