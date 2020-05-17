@@ -168,3 +168,58 @@ exports.onDeletePost = functions.firestore
                 .catch(error => { return error; });
         });
     });
+
+    exports.onCreateActivityFeedItem = functions.firestore.document("/feed/{userId}/feedItems/{activityFeedItem}")
+    .onCreate(async (snapshot, context) => {
+        console.log("FeedItemCreated", snapshot.data());
+
+        //connect user to feed
+        const userId = context.params.userId;
+        const userRef = admin.firestore().doc(`users/${userId}`);
+        const doc = await userRef.get();
+
+        //check for notification token
+        const androidNotificationToken = doc.data().androidNotificationToken; 
+
+        if(androidNotificationToken){
+            sendNotification(androidNotificationToken, snapshot.data());
+        }
+        else{
+            console.log("No token for user, cannot send notification");
+        }
+
+        function sendNotification(androidNotificationToken,
+            activityFeedItem){
+                let body;
+                switch (activityFeedItem.type) {
+                    case "comment":
+                        body = `${activityFeedItem.username} replied: ${activityFeedItem.commentData}`;
+                        break;
+                    case "like":
+                        body = `${activityFeedItem.username} liked your post!`;
+                        break;
+                    case "follow":
+                        body = `${activityFeedItem.username} started following you!`;
+                        break;
+                    default:
+                        break;
+                }
+                const message = {
+                    notification: { body },
+                    token: androidNotificationToken,
+                    data: { recipient: userId },
+                };
+                admin
+                .messaging
+                .send(message)
+                .then(response => 
+                    {
+                        return console.log("SUCCESS: Message Sent!", response);
+                    }
+                )
+                .catch(error => {
+                    return console.log("FAILURE: Error found in sending message!", error);
+                });
+        }
+
+    });
