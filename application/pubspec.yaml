@@ -37,6 +37,11 @@ dependencies:
   flutter_svg: ^0.17.3+1
   flutter_launcher_icons: ^0.7.5
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -57,7 +62,6 @@ flutter:
     - assets/images/search.svg
     - assets/images/activity_feed.svg
     - assets/images/no_content.svg
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/images/icon.png"
+    - assets/images/movie.png
+    - assets/images/splash_image.png
+
