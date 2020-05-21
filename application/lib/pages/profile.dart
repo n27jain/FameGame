@@ -286,7 +286,7 @@ class _ProfileState extends State<Profile> {
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: 12.0),
                 child: Text(
-                  user.username,
+                  user.username??' ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16.0,

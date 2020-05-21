@@ -231,7 +231,11 @@ class _HomeState extends State<Home> {
                 color: Theme.of(context).accentColor,
               ),
             ),
-            Image(image: AssetImage('assets/images/splash_image.png'), fit: BoxFit.cover,
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: 25.0
+              ),
+                child: Image(image: AssetImage('assets/images/splash_image.png'), fit: BoxFit.cover,),
             ),
             GestureDetector(
               onTap: login,
