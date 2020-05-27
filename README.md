@@ -8,7 +8,7 @@ Checkout out the orginal project in android native: [Social Media]. I plan to ma
 ## Project API's and Technologies:
   - [VS Code] (IDE)
   - [Firebase] (API) (RealTime DataBase) (Virtual Storage) (Authentication)
-  - [Fluter] (Dart)(Cross-Platform Developtment)(IOS + ANDROID)
+  - [Flutter] (Dart)(Cross-Platform Developtment)(IOS + ANDROID)
 
 ## Objectives
 
