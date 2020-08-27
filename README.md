@@ -1,4 +1,8 @@
 Fame Game
+**Last Update:** 08/27/2020
+The app is down right now. We are resolving some issues with the application please wait as we try to solve this issue.
+
+
 **Last Update:** 05/26/2020
 It's Out! Download here: [Play Store]
 People compete for fame on every social media platform. They like every post they see in hopes that the other person will return the favour.This app is designed to trace those people and their behaviours. The twist? The participant that gets the most likes will be awarded $100. I made this app using Flutter and Firebase.
