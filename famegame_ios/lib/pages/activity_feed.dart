@@ -1,12 +1,10 @@
-
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/pages/post_screen.dart';
-import 'package:fluttershare/pages/profile.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import 'home.dart';
+import 'post_screen.dart';
+import 'profile.dart';
+import '../widgets/progress.dart';
 import '../widgets/header.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -16,42 +14,43 @@ class ActivityFeed extends StatefulWidget {
 }
 
 class _ActivityFeedState extends State<ActivityFeed> {
-
-  getActivityFeed() async{
-     QuerySnapshot snapshot = await feedRef
+  getActivityFeed() async {
+    QuerySnapshot snapshot = await feedRef
         .document(currentUser.id)
         .collection('feedItems')
         .orderBy('timestamp', descending: true)
         .limit(50)
         .getDocuments();
-      List<ActivityFeedItem> feedItems = [];
-      snapshot.documents.forEach((element) {
-        feedItems.add(ActivityFeedItem.fromDocument(element));
-      });
-      // snapshot.documents.forEach((element) {
-      //  print('Activity Feed Item: ${element.data}');
-      // });
-      return feedItems;
+    List<ActivityFeedItem> feedItems = [];
+    snapshot.documents.forEach((element) {
+      feedItems.add(ActivityFeedItem.fromDocument(element));
+    });
+    // snapshot.documents.forEach((element) {
+    //  print('Activity Feed Item: ${element.data}');
+    // });
+    return feedItems;
   }
+
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    return Scaffold(
       appBar: header(context),
       body: Container(
-        child: FutureBuilder(
-          future: getActivityFeed(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return circularProgress(context);
-            }
-            return ListView(
-              children: snapshot.data,
-            );
-          },
-        )),
+          child: FutureBuilder(
+        future: getActivityFeed(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return circularProgress(context);
+          }
+          return ListView(
+            children: snapshot.data,
+          );
+        },
+      )),
     );
   }
 }
+
 Widget mediaPreview;
 String activityItemText;
 
@@ -89,15 +88,17 @@ class ActivityFeedItem extends StatelessWidget {
     );
   }
 
-  showPost(context){
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => 
-        PostScreen(postId: postId, userId: userId,)
-      )
-    );
+  showPost(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PostScreen(
+                  postId: postId,
+                  userId: userId,
+                )));
   }
 
-   configureMediaPreview(context) {
+  configureMediaPreview(context) {
     if (type == "like" || type == 'comment') {
       mediaPreview = GestureDetector(
         onTap: () => showPost(context),
@@ -130,7 +131,7 @@ class ActivityFeedItem extends StatelessWidget {
       activityItemText = "Error: Unknown type '$type'";
     }
   }
-    
+
   @override
   Widget build(BuildContext context) {
     configureMediaPreview(context);
@@ -177,13 +178,9 @@ showProfile(BuildContext context, {String profileId}) {
   Navigator.push(
     context,
     MaterialPageRoute(
-
-
-
       builder: (context) => Profile(
         profileId: profileId,
       ),
     ),
   );
 }
-

@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:fluttershare/widgets/header.dart';
-import 'package:fluttershare/widgets/post.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../widgets/header.dart';
+import '../widgets/post.dart';
+import '../widgets/progress.dart';
 import 'home.dart';
 
 class PostScreen extends StatelessWidget {
   final String userId;
   final String postId;
-
   PostScreen({this.userId, this.postId});
 
   @override
   Widget build(BuildContext context) {
-   return FutureBuilder(
-      future: postsRef
-          .document(userId)
-          .collection('posts')
-          .document(postId)
-          .get(),
+    return FutureBuilder(
+      future:
+          postsRef.document(userId).collection('posts').document(postId).get(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return circularProgress(context);

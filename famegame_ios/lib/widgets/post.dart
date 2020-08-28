@@ -1,14 +1,14 @@
 import 'dart:async';
-import 'package:animator/animator.dart';
+//import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/activity_feed.dart';
-import 'package:fluttershare/pages/comments.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/custom_image.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../models/user.dart';
+import '../pages/activity_feed.dart';
+import '../pages/comments.dart';
+import '../pages/home.dart';
+import '../widgets/custom_image.dart';
+import '../widgets/progress.dart';
 
 //TODO: Get push notifications to work!
 
@@ -276,22 +276,22 @@ class _PostState extends State<Post> {
         alignment: Alignment.center,
         children: <Widget>[
           cachedNetworkImage(mediaUrl),
-          showHeart
-              ? Animator(
-                  duration: Duration(milliseconds: 300),
-                  tween: Tween(begin: 0.8, end: 1.4),
-                  curve: Curves.elasticOut,
-                  cycles: 0,
-                  builder: (anim) => Transform.scale(
-                    scale: anim.value,
-                    child: Icon(
-                      Icons.favorite,
-                      size: 80,
-                      color: Colors.red,
-                    ),
-                  ),
-                )
-              : Text("")
+          // showHeart
+          //     ? Animator(
+          //         duration: Duration(milliseconds: 300),
+          //         tween: Tween(begin: 0.8, end: 1.4),
+          //         curve: Curves.elasticOut,
+          //         cycles: 0,
+          //         builder: (anim) => Transform.scale(
+          //           scale: anim.value,
+          //           child: Icon(
+          //             Icons.favorite,
+          //             size: 80,
+          //             color: Colors.red,
+          //           ),
+          //         ),
+          //       )
+          //     : Text("")
         ],
       ),
     );

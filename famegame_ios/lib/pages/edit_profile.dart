@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../models/user.dart';
+import '../pages/home.dart';
+import '../widgets/progress.dart';
 
 //TODO: Fix issue where the profile does not get immediately updated. Likely a future object issue.
 class EditProfile extends StatefulWidget {
@@ -90,13 +90,11 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       //TODO: figure out correct way to trim
       displayNameController.text.trim().length < 3 ||
-        displayNameController.text.trim().length > 16||
-        displayNameController.text.isEmpty 
+              displayNameController.text.trim().length > 16 ||
+              displayNameController.text.isEmpty
           ? _displayNameValid = false
           : _displayNameValid = true;
-      bioController.text.length > 200
-          ? _bioValid = false
-          : _bioValid = true;
+      bioController.text.length > 200 ? _bioValid = false : _bioValid = true;
     });
 
     if (_displayNameValid && _bioValid) {
@@ -128,7 +126,9 @@ class _EditProfileState extends State<EditProfile> {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pop(context, () {setState(() {});}),
+            onPressed: () => Navigator.pop(context, () {
+              setState(() {});
+            }),
             icon: Icon(
               Icons.done,
               size: 30.0,
