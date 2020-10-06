@@ -186,7 +186,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
@@ -233,7 +233,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
   geolocator:
     :path: ".symlinks/plugins/geolocator/ios"
   google_api_availability:
@@ -287,6 +287,6 @@ SPEC CHECKSUMS:
   Protobuf: 3f617b9a6e73605565086864c9bc26b2bf2dd5a3
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
 
-PODFILE CHECKSUM: 81d9101721a74b9b88ddd9e9dfe15eec968bc82e
+PODFILE CHECKSUM: 767f1abb03af4fee084e7d46e938dfe0c9c61418
 
 COCOAPODS: 1.9.2
