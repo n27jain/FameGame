@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "129962680692",
+    "firebase_url": "https://famegameoffical.firebaseio.com",
+    "project_id": "famegameoffical",
+    "storage_bucket": "famegameoffical.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129962680692:android:1516bf45229ac97b648c21",
+        "android_client_info": {
+          "package_name": "com.namanjain.famegameofficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129962680692-u7d71o2hfimka9bsggvhcv0o37iuefpn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.namanjain.famegameofficial",
+            "certificate_hash": "ec8816b5d97b34d64d38fa1345881e7147cb0d5d"
+          }
+        },
+        {
+          "client_id": "129962680692-uc9noapfjh9v331l7divpud5ipodofaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDseNA7admTSke_3Y8DY1JRBx9yODvewVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129962680692-uc9noapfjh9v331l7divpud5ipodofaa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "129962680692-u3920eta2ae49c9asrqomuie4qd6kh6r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.namanjain.famegameofficial"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

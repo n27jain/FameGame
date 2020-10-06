@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>129962680692-u3920eta2ae49c9asrqomuie4qd6kh6r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.129962680692-u3920eta2ae49c9asrqomuie4qd6kh6r</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>129962680692-u7d71o2hfimka9bsggvhcv0o37iuefpn.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDCUiBHH6hjX5XGHIFambsTUyE1vbsWEWk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>129962680692</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.namanjain.famegameofficial</string>
+	<key>PROJECT_ID</key>
+	<string>famegameoffical</string>
+	<key>STORAGE_BUCKET</key>
+	<string>famegameoffical.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:129962680692:ios:100762d65e17f1d0648c21</string>
+	<key>DATABASE_URL</key>
+	<string>https://famegameoffical.firebaseio.com</string>
+</dict>
+</plist>
