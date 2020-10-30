@@ -12,7 +12,6 @@ import '../widgets/progress.dart';
 import 'package:image/image.dart' as Im;
 import 'home.dart';
 
-
 class Upload extends StatefulWidget {
   final User currentUser;
   Upload({this.currentUser});
@@ -20,7 +19,8 @@ class Upload extends StatefulWidget {
   _UploadState createState() => _UploadState();
 }
 
-class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Upload> {
+class _UploadState extends State<Upload>
+    with AutomaticKeepAliveClientMixin<Upload> {
   TextEditingController captionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   File file;
@@ -38,6 +38,7 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
       this.file = file;
     });
   }
+
   handleChooseFromGallery() async {
     Navigator.pop(context);
     File file = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -45,72 +46,76 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
       this.file = file;
     });
   }
-  selectImage(parentContext){
+
+  selectImage(parentContext) {
     return showDialog(
-      context: parentContext,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text("Create Post"),
-          children: <Widget>[
-            SimpleDialogOption(
-                child: Text(
-                  "Photo with Camera"), 
-                  onPressed: handleTakePhoto
-                ),
-            SimpleDialogOption(
-                child: Text("Image from Gallery"),
-                onPressed: handleChooseFromGallery),
-            SimpleDialogOption(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
-      }
-    );
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Create Post"),
+            children: <Widget>[
+              SimpleDialogOption(
+                  child: Text("Photo with Camera"), onPressed: handleTakePhoto),
+              SimpleDialogOption(
+                  child: Text("Image from Gallery"),
+                  onPressed: handleChooseFromGallery),
+              SimpleDialogOption(
+                child: Text("Cancel"),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
   }
-  clearImage(){
+
+  clearImage() {
     setState(() {
       file = null;
     });
   }
-  compressImage() async{
+
+  compressImage() async {
     final tempDir = await getTemporaryDirectory();
-    final path  = tempDir.path;
+    final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$postId.jpg')..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
+    final compressedImageFile = File('$path/img_$postId.jpg')
+      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
     setState(() {
       file = compressedImageFile;
     });
   }
-  Future<String> uploadImage(imageFile) async{
-    StorageUploadTask uploadTask = storageReference.child("post_$postId.jpg").putFile(imageFile);
+
+  Future<String> uploadImage(imageFile) async {
+    StorageUploadTask uploadTask =
+        storageReference.child("post_$postId.jpg").putFile(imageFile);
     StorageTaskSnapshot storageSnap = await uploadTask.onComplete;
     return await storageSnap.ref.getDownloadURL();
   }
-  createPostInFirestore({String mediaUrl, String location, String description}){
+
+  createPostInFirestore(
+      {String mediaUrl, String location, String description}) {
     postsRef
-      .document(widget.currentUser.id)
-      .collection("posts")
-      .document(postId)
-      .setData({
-        "postId": postId,
-        "ownerId": widget.currentUser.id,
-        "username": widget.currentUser.username,
-        "mediaUrl": mediaUrl,
-        "description": description,
-        "location": location,
-        "timestamp" : timeStamp,
-        "likes" : {},
-        
-      });
+        .document(widget.currentUser.id)
+        .collection("posts")
+        .document(postId)
+        .setData({
+      "postId": postId,
+      "ownerId": widget.currentUser.id,
+      "username": widget.currentUser.username,
+      "mediaUrl": mediaUrl,
+      "description": description,
+      "location": location,
+      "timestamp": timeStamp,
+      "likes": {},
+    });
   }
-  handlesSubmit() async{
+
+  handlesSubmit() async {
     setState(() {
       isUploading = true;
     });
     await compressImage();
-    String mediaUrl  = await uploadImage(file);
+    String mediaUrl = await uploadImage(file);
     createPostInFirestore(
       mediaUrl: mediaUrl,
       location: locationController.text,
@@ -124,8 +129,9 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
       postId = Uuid().v4();
     });
   }
-  buildUploadForm(){
-     return Scaffold(
+
+  buildUploadForm() {
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white70,
         leading: IconButton(
@@ -137,7 +143,7 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
         ),
         actions: [
           FlatButton(
-            onPressed: isUploading ? null: () => handlesSubmit() ,
+            onPressed: isUploading ? null : () => handlesSubmit(),
             child: Text(
               "Post",
               style: TextStyle(
@@ -231,14 +237,14 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
     );
   }
 
-  Container buildSplashScreen(){
+  Container buildSplashScreen() {
     return Container(
       color: Theme.of(context).primaryColorLight,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-           SvgPicture.asset('assets/images/upload.svg', height: 260.0),
-           Padding(
+          SvgPicture.asset('assets/images/upload.svg', height: 260.0),
+          Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: RaisedButton(
                 shape: RoundedRectangleBorder(
@@ -254,11 +260,13 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
                 color: Colors.deepOrange,
                 onPressed: () => selectImage(context)),
           ),
-        ],),
+        ],
+      ),
     );
   }
 
   getUserLocation() async {
+    print("trying to get user location");
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     List<Placemark> placemarks = await Geolocator()
