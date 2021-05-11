@@ -1,6 +1,6 @@
 Fame Game
 **Last Update:** 08/27/2020
-The app is down right now. We are resolving some issues with the application please wait as we try to solve this issue.
+The app is down right now. We are resolving some issues with the application please wait as we try to solve this issue. I am very busy with school right now so the second beta will be out September 2021! Stay tuned and sign up with a referal link. This time we will have 100 competitors!
 
 
 **Last Update:** 05/26/2020
